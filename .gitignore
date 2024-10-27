@@ -1,5 +1,6 @@
 node_modules/
 .next/
+.next/*
 /.next/
 .next/trace
 .next/cache/webpack/client-development/1.pack.gz
