@@ -1,6 +1,6 @@
 import React from "react";
-import { Typography, Container } from "@mui/material";
-import BarChart from "./../../src/components/BarChart.tsx";
+import { Container } from "@mui/material";
+import BarChart from "./../../src/components/BarChart";
 
 type Props = {};
 
