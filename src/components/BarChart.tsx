@@ -6,10 +6,12 @@ type Props = {};
 const BarChart = (props: Props) => {
   return (
     <>
-      <Typography variant="h4">test</Typography>
-      <Typography variant="h4">test from another component</Typography>
+      <Typography variant="h4">BarChart sample</Typography>
+      <svg>
+      </svg>
     </>
   );
 };
+
 
 export default BarChart;
