@@ -1,13 +1,23 @@
 import React from "react";
-import { Container } from "@mui/material";
-import BarChart from "./../../src/components/BarChart";
+import { Container, Grid } from "@mui/material";
+import StackedArcChart from "@/components/StackedArcChart";
+import BarChart from "@/components/BarChart";
 
 type Props = {};
 
 const index = (props: Props) => {
   return (
     <Container>
-      <BarChart></BarChart>
+      <Grid container>
+        <Grid xs={6}>
+          <BarChart color="#5eb47c" />
+        </Grid>
+
+        <Grid xs={6}>
+          <BarChart />
+        </Grid>
+      </Grid>
+      {/* <StackedArcChart></StackedArcChart> */}
     </Container>
   );
 };

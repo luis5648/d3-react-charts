@@ -1,78 +1,101 @@
-import React, { useRef, useEffect } from "react";
-import { Grid, Typography } from "@mui/material";
-import jsonData from "../reusable/data.json";
+import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
+import Stack from "@mui/material/Stack";
+import { ramdomValues } from "@/reusable/data_arrays";
 
-type Props = {};
+type Props = {
+  color?: string;
+};
 
 const BarChart = (props: Props) => {
-  const data = jsonData;
+  const { color = "#7a4af9" } = props;
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const width = 928;
-  const height = width;
+  const data = ramdomValues;
+  const [selection, setSelection] = useState<null | d3.Selection<
+    SVGSVGElement | null,
+    unknown,
+    null,
+    undefined
+  >>(null);
 
-  const chartDefinition = {
-    width: width,
-    height: height,
-    innerRadius: 180,
-    outerRadius: Math.min(width, height) / 2,
-  };
+  const margin = { top: 20, right: 20, bottom: 40, left: 40 };
+  const width = 600 - margin.left - margin.right;
+  const height = 400 - margin.top - margin.bottom;
+
+  const maxValue = d3.max(data);
+
+  // const yScale = d3.scaleLinear().domain
 
   useEffect(() => {
-    if (!svgRef.current) return;
+    if (!selection) {
+      setSelection(d3.select(svgRef.current));
+    } else {
+      const xScale = d3.scaleBand()
+        .domain(data.map((_, i) => i.toString()))
+        .range([0, width])
+        .padding(0.1);
 
-    const series = d3
-      .stack()
-      .keys(d3.union(data.map((d) => d.age)))
-      .value((d, key) => d[key] as number)(
-      d3.index(data, (d) => d.state) as unknown as Iterable<{
-        [key: string]: number;
-      }>,
-      (d: { age: number }) => d.age
-    );
+      const yScale = d3.scaleLinear()
+        .domain([0, d3.max(data) ?? 0])
+        .range([height, 0]);
 
-    // An angular x-scale
-    const x = d3
-      .scaleBand()
-      .domain(data.map((d) => d.state))
-      .range([0, 2 * Math.PI])
-      .align(0);
+      // Clear previous content
+      selection.selectAll("*").remove();
+      
+      const g = selection
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // A radial y-scale maintains area proportionality of radial bars
-    const y = d3
-      .scaleRadial()
-      .domain([0, d3.max(series, (d) => d3.max(d, (d) => d[1])) as number])
-      .range([chartDefinition.innerRadius, chartDefinition.outerRadius]);
+      // Add bars
+      g.selectAll("rect")
+        .data(data)
+        .enter()
+        .append("rect")
+        .attr("x", (d, i) => xScale(i.toString()) ?? 0)
+        .attr("y", d => yScale(d))
+        .attr("width", xScale.bandwidth())
+        .attr("height", d => height - yScale(d))
+        .attr("fill", color);
 
-    const arc = d3
-      .arc()
-      .innerRadius((d) => y(d[0]))
-      .outerRadius((d) => y(d[1]))
-      .startAngle((d) => x(d.data.state) || 0)
-      .endAngle((d) => (x(d.data.state) || 0) + (x.bandwidth() || 0))
-      .padAngle(1.5 / chartDefinition.innerRadius)
-      .padRadius(chartDefinition.innerRadius);
+      // Add x axis
+      g.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(xScale));
 
-    //append graph elements to svg
-    d3.select(svgRef.current)
-      .append("rect")
-      .attr("width", 100)
-      .attr("height", 100)
-      .attr("fill", "green");
-  }, []);
+      // Add y axis
+      g.append("g")
+        .call(d3.axisLeft(yScale));
+
+
+      // const svg = selection
+      //   .selectAll("rect")
+      //   .data(data)
+      //   .enter()
+      //   .append("rect")
+      //   .attr("height", function (d, i) {
+      //     return d * 15;
+      //   })
+      //   .attr("width", "50")
+      //   .attr("x", function (d, i) {
+      //     return 60*i;
+      //   })
+      //   .attr("y", function (d, i) {
+      //     return 300 - (d * 15);
+      //   })
+      //   .attr("fill", "blue");
+    }
+  }, [selection]);
+
 
   return (
     <>
-      <Typography variant="h4">BarChart sample</Typography>
-
-      <Grid container>
-        <Grid item mt={5}>
-          <svg ref={svgRef}></svg>
-        </Grid>
-      </Grid>
+        <h1>Bar Chart</h1>
+        <svg ref={svgRef} 
+         width={width + margin.left + margin.right} 
+         height={height + margin.top + margin.bottom}
+        ></svg>
     </>
   );
-
 };
 
 export default BarChart;
