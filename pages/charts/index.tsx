@@ -1,6 +1,5 @@
 import React from "react";
 import { Container, Grid } from "@mui/material";
-import StackedArcChart from "@/components/StackedArcChart";
 import BarChart from "@/components/BarChart";
 
 type Props = {};
@@ -10,11 +9,11 @@ const index = (props: Props) => {
     <Container>
       <Grid container>
         <Grid xs={6}>
-          <BarChart color="#5eb47c" />
+          <BarChart color="#5eb47c" width="300" height="400" />
         </Grid>
 
         <Grid xs={6}>
-          <BarChart />
+          <BarChart width="300" height="400" />
         </Grid>
       </Grid>
       {/* <StackedArcChart></StackedArcChart> */}
