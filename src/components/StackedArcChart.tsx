@@ -46,10 +46,10 @@ const StackedArcChart = (props: Props) => {
 
     const arc = d3
       .arc()
-      .innerRadius((d) => y(d[0]))
-      .outerRadius((d) => y(d[1]))
-      .startAngle((d) => x(d.data.state) || 0)
-      .endAngle((d) => (x(d.data.state) || 0) + (x.bandwidth() || 0))
+      .innerRadius((d: any) => y(d[0]))
+      .outerRadius((d: any) => y(d[1]))
+      .startAngle((d: any) => x(d.data.state) || 0)
+      .endAngle((d: any) => (x(d.data.state) || 0) + (x.bandwidth() || 0))
       .padAngle(1.5 / chartDefinition.innerRadius)
       .padRadius(chartDefinition.innerRadius);
 
